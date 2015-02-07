@@ -2,6 +2,7 @@ package ru.chand.codepathweekoneinstagramviewer;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.makeramen.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
@@ -38,8 +41,18 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         TextView tvlikes = (TextView) convertView.findViewById(R.id.tvLike);
         TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
 
+        Transformation transformation = new RoundedTransformationBuilder()
+                .cornerRadiusDp(30)
+                .oval(false)
+                .build();
+
+
         ivUserPhoto.setImageResource(0);
-        Picasso.with(getContext()).load(photo.userProfileImageUrl).into(ivUserPhoto);
+        Picasso.with(getContext())
+                .load(photo.userProfileImageUrl)
+                .fit()
+                .transform(transformation)
+                .into(ivUserPhoto);
         tvUserName.setText(photo.username);
         tvTime.setText(photo.timestamp);
 
