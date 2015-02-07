@@ -1,6 +1,7 @@
 package ru.chand.codepathweekoneinstagramviewer;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +32,28 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
 
         TextView tvcaption = (TextView) convertView.findViewById(R.id.tvCaption);
         ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivImage);
+        TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
+        ImageView ivUserPhoto = (ImageView) convertView.findViewById(R.id.ivUserImage);
+        TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
+        TextView tvlikes = (TextView) convertView.findViewById(R.id.tvLike);
+        TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
+
+        ivUserPhoto.setImageResource(0);
+        Picasso.with(getContext()).load(photo.userProfileImageUrl).into(ivUserPhoto);
+        tvUserName.setText(photo.username);
+        tvTime.setText(photo.timestamp);
 
         tvcaption.setText(photo.caption);
         ivPhoto.setImageResource(0);
         Picasso.with(getContext()).load(photo.imageUrl).into(ivPhoto);
+
+        tvlikes.setText(Integer.toString(photo.likeCounts) +
+                getContext().getResources().getString(R.string.space) +
+                getContext().getResources().getString(R.string.likes));
+
+        tvComments.setText(Integer.toString(photo.commentCounts) +
+                getContext().getResources().getString(R.string.space) +
+                getContext().getResources().getString(R.string.comments));
 
         return convertView;
     }

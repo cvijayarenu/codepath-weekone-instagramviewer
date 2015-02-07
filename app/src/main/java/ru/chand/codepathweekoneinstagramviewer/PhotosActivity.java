@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class PhotosActivity extends ActionBarActivity {
+public class PhotosActivity extends Activity {
 
     public static final String CLIENT_ID = "50b5b3f8322f4dc08bb6c400063c4d3b";
 
@@ -60,6 +60,7 @@ public class PhotosActivity extends ActionBarActivity {
                         photo.imageUrl = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
                         photo.imageHeight = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
                         photo.likeCounts = photoJson.getJSONObject("likes").getInt("count");
+                        photo.commentCounts = photoJson.getJSONObject("comments").getInt("count");
                         photo.timestamp = photoJson.getString("created_time");
 
                         instagramPhotos.add(photo);

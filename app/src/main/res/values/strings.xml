@@ -7,5 +7,9 @@
     <string name="caption">Caption</string>
     <string name="media">Media</string>
     <string name="user">User</string>
+    <string name="likes">likes</string>
+    <string name="comments">comments</string>
+    <string name="space"> </string>
+
 
 </resources>
