@@ -1,6 +1,7 @@
 package ru.chand.codepathweekoneinstagramviewer;
 
 import android.app.Activity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ public class PhotosActivity extends Activity {
 
     private ArrayList<InstagramPhoto> instagramPhotos ;
     private InstagramPhotosAdapter aPhotos;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +35,21 @@ public class PhotosActivity extends Activity {
         instagramPhotos = new ArrayList<>();
         aPhotos = new InstagramPhotosAdapter(this, instagramPhotos);
         ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         lvPhotos.setAdapter(aPhotos);
         fetchPopularPhotos();
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchPopularPhotos();
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     /*
@@ -47,10 +62,12 @@ public class PhotosActivity extends Activity {
         client.get(url, null, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                swipeContainer.setRefreshing(false);
                 //Log.i("DEBUG",response.toString());
                 JSONArray photosJson = null;
                 try {
                     photosJson = response.getJSONArray("data");
+                    instagramPhotos.clear();
                     for(int i = 0 ; i < photosJson.length(); i++){
                         JSONObject photoJson = photosJson.getJSONObject(i);
                         InstagramPhoto photo = new InstagramPhoto();
@@ -75,7 +92,7 @@ public class PhotosActivity extends Activity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                //super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("DEBUG", "Fetch timeline error: ");
             }
         });
     }
