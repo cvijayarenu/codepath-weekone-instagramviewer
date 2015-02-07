@@ -3,6 +3,7 @@ package ru.chand.codepathweekoneinstagramviewer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,11 +55,16 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
                 .transform(transformation)
                 .into(ivUserPhoto);
         tvUserName.setText(photo.username);
-        tvTime.setText(photo.timestamp);
+
+        long timevalue = Long.valueOf(photo.timestamp);
+        String time = (String) DateUtils.getRelativeTimeSpanString(timevalue * 1000);
+
+        tvTime.setText(time);
 
         tvcaption.setText(photo.caption);
         ivPhoto.setImageResource(0);
-        Picasso.with(getContext()).load(photo.imageUrl).into(ivPhoto);
+        Picasso.with(getContext()).load(photo.imageUrl)
+                .into(ivPhoto);
 
         tvlikes.setText(Integer.toString(photo.likeCounts) +
                 getContext().getResources().getString(R.string.space) +

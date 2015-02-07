@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -27,6 +30,7 @@ public class PhotosActivity extends Activity {
     private ArrayList<InstagramPhoto> instagramPhotos ;
     private InstagramPhotosAdapter aPhotos;
     private SwipeRefreshLayout swipeContainer;
+    private ListView lvPhotos ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +38,11 @@ public class PhotosActivity extends Activity {
         setContentView(R.layout.activity_photos);
         instagramPhotos = new ArrayList<>();
         aPhotos = new InstagramPhotosAdapter(this, instagramPhotos);
-        ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
+        lvPhotos = (ListView) findViewById(R.id.lvPhotos);
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         lvPhotos.setAdapter(aPhotos);
         fetchPopularPhotos();
+        setupListViewListener();
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -50,6 +55,18 @@ public class PhotosActivity extends Activity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+    }
+
+    private void setupListViewListener() {
+        lvPhotos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                InstagramPhoto photo = instagramPhotos.get(position);
+
+            }
+        });
+
+
     }
 
     /*
@@ -71,6 +88,7 @@ public class PhotosActivity extends Activity {
                     for(int i = 0 ; i < photosJson.length(); i++){
                         JSONObject photoJson = photosJson.getJSONObject(i);
                         InstagramPhoto photo = new InstagramPhoto();
+                        photo.id    = photoJson.getString("id");
                         photo.username = photoJson.getJSONObject("user").getString("username");
                         photo.userProfileImageUrl = photoJson.getJSONObject("user").getString("profile_picture");
                         photo.caption = photoJson.getJSONObject("caption").getString("text");
