@@ -22,6 +22,19 @@ import java.util.List;
  */
 public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
 
+
+    // View lookup cache
+    private static class ViewHolder {
+        ImageView userImage;
+        TextView userName;
+        TextView time;
+        ImageView image;
+        TextView likes;
+        TextView comments;
+        TextView content;
+    }
+
+
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> objects) {
         super(context, android.R.layout.simple_list_item_1, objects);
     }
@@ -30,17 +43,30 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         InstagramPhoto photo = getItem(position);
+        ViewHolder viewHolder;
         if(convertView == null){
+            viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
+            TextView tvcaption = (TextView) convertView.findViewById(R.id.tvCaption);
+            ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivImage);
+            TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
+            ImageView ivUserPhoto = (ImageView) convertView.findViewById(R.id.ivUserImage);
+            TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
+            TextView tvlikes = (TextView) convertView.findViewById(R.id.tvLike);
+            TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
+
+            viewHolder.userImage = ivUserPhoto;
+            viewHolder.userName = tvUserName;
+            viewHolder.time = tvTime;
+            viewHolder.image = ivPhoto;
+            viewHolder.likes = tvlikes;
+            viewHolder.comments = tvComments;
+            viewHolder.content = tvcaption;
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        TextView tvcaption = (TextView) convertView.findViewById(R.id.tvCaption);
-        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivImage);
-        TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
-        ImageView ivUserPhoto = (ImageView) convertView.findViewById(R.id.ivUserImage);
-        TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
-        TextView tvlikes = (TextView) convertView.findViewById(R.id.tvLike);
-        TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
 
         Transformation transformation = new RoundedTransformationBuilder()
                 .cornerRadiusDp(30)
@@ -48,31 +74,31 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
                 .build();
 
 
-        ivUserPhoto.setImageResource(0);
+        viewHolder.userImage.setImageResource(0);
         Picasso.with(getContext())
                 .load(photo.userProfileImageUrl)
                 .fit()
                 .transform(transformation)
-                .into(ivUserPhoto);
-        tvUserName.setText(photo.username);
+                .into(viewHolder.userImage);
+        viewHolder.userName.setText(photo.username);
 
         long timevalue = Long.valueOf(photo.timestamp);
         String time = (String) DateUtils.getRelativeTimeSpanString(timevalue * 1000);
-
-        tvTime.setText(time);
-
-        tvcaption.setText(photo.caption);
-        ivPhoto.setImageResource(0);
+        viewHolder.time.setText(time);
+        viewHolder.image.setImageResource(0);
         Picasso.with(getContext()).load(photo.imageUrl)
-                .into(ivPhoto);
+                .fit()
+                .centerInside()
+                .into(viewHolder.image);
 
-        tvlikes.setText(Integer.toString(photo.likeCounts) +
+        viewHolder.likes.setText(Integer.toString(photo.likeCounts) +
                 getContext().getResources().getString(R.string.space) +
                 getContext().getResources().getString(R.string.likes));
 
-        tvComments.setText(Integer.toString(photo.commentCounts) +
+        viewHolder.comments.setText(Integer.toString(photo.commentCounts) +
                 getContext().getResources().getString(R.string.space) +
                 getContext().getResources().getString(R.string.comments));
+        viewHolder.content.setText(photo.caption);
 
         return convertView;
     }
