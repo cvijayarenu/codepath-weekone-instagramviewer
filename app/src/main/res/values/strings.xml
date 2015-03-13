@@ -9,7 +9,7 @@
     <string name="user">User</string>
     <string name="likes">likes</string>
     <string name="comments">comments</string>
-    <string name="space"> </string>
+    <string name="space"></string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue">#305D8B</color>

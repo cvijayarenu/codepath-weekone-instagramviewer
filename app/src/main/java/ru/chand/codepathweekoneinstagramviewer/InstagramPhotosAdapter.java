@@ -92,10 +92,10 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
                 .into(viewHolder.image);
 
         viewHolder.likes.setText(Integer.toString(photo.likeCounts) +
-                getContext().getResources().getString(R.string.space) +
+                getContext().getResources().getString(R.string.space) + " "+
                 getContext().getResources().getString(R.string.likes));
 
-        viewHolder.comments.setText(Integer.toString(photo.commentCounts) +
+        viewHolder.comments.setText(Integer.toString(photo.commentCounts) + " " +
                 getContext().getResources().getString(R.string.space) +
                 getContext().getResources().getString(R.string.comments));
         viewHolder.content.setText(photo.caption);

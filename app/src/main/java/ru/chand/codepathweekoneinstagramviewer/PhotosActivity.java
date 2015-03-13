@@ -21,11 +21,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class PhotosActivity extends Activity {
 
     public static final String CLIENT_ID = "50b5b3f8322f4dc08bb6c400063c4d3b";
+    public static final String MEDIA_POPULAR_URL = "https://api.instagram.com/v1/media/popular?client_id=";
+    public static final String MEDIA_COMMENTS_URL_PART_1 = "https://api.instagram.com/v1/media/";
+    public static final String MEDIA_COMMENTS_URL_PART_2 = "/comments?client_id=";
 
     private ArrayList<InstagramPhoto> instagramPhotos ;
     private InstagramPhotosAdapter aPhotos;
@@ -74,7 +78,7 @@ public class PhotosActivity extends Activity {
      */
     public void fetchPopularPhotos(){
 
-        String url = "https://api.instagram.com/v1/media/popular?client_id="+ CLIENT_ID;
+        String url = MEDIA_POPULAR_URL + CLIENT_ID;
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, null, new JsonHttpResponseHandler(){
             @Override
@@ -97,6 +101,20 @@ public class PhotosActivity extends Activity {
                         photo.likeCounts = photoJson.getJSONObject("likes").getInt("count");
                         photo.commentCounts = photoJson.getJSONObject("comments").getInt("count");
                         photo.timestamp = photoJson.getString("created_time");
+
+                        ArrayList<InstagramPhotoComments> comments = new ArrayList<InstagramPhotoComments>();
+
+                        JSONArray jsoncomments = photoJson.getJSONObject("comments").getJSONArray("data");
+                        for(int j = 0; j < jsoncomments.length(); j++){
+                            InstagramPhotoComments comment = new InstagramPhotoComments();
+                            JSONObject jsoncomment = (JSONObject) jsoncomments.get(j);
+                            comment.id = jsoncomment.getString("id");
+                            comment.comment = jsoncomment.getString("text");
+                            comment.user = jsoncomment.getJSONObject("from").getString("username");
+                            comment.userImgUrl = jsoncomment.getJSONObject("from").getString("profile_picture");
+                            comments.add(comment);
+                        }
+                        photo.comments = comments;
 
                         instagramPhotos.add(photo);
                     }

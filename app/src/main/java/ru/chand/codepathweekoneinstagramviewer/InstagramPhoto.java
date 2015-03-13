@@ -1,5 +1,8 @@
 package ru.chand.codepathweekoneinstagramviewer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by chandrav on 2/6/15.
  */
@@ -13,4 +16,8 @@ public class InstagramPhoto {
     public int likeCounts;
     public int commentCounts;
     public String timestamp;
+
+    public ArrayList<InstagramPhotoComments> comments;
 }
+
+
